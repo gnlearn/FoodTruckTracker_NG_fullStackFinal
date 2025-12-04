@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const truckSchema = new mongoose.Schema({
-  truckID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Truck',
-    required: true
-  },
   truckName: {
     type: String,
     required: true, 
@@ -38,7 +33,11 @@ const truckSchema = new mongoose.Schema({
     type: String,
     required: true, 
     trim: true
-  }
+  },
+  ownerID: {
+    type: Number,
+    required: true
+  },
 }, { 
   timestamps: true 
 });
