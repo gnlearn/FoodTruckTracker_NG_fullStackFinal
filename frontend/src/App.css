@@ -1,0 +1,16 @@
+.truckInput {
+  resize: none;
+  overflow: auto;
+}
+
+.main-content {
+    display: flex;
+}
+
+.right-content {
+    padding: 20px;
+}
+
+.listing {
+    border-bottom: solid;
+}
