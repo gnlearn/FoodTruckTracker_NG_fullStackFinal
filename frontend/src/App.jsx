@@ -1,8 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { getTrucks, createTruck, updateTruck, deleteTruck } from './api/trucks';
 
+import '@tomtom-international/web-sdk-maps/dist/maps.css';
+import mapSDK from '@tomtom-international/web-sdk-maps';
+
+
 function App() {
+  const apiKey = import.meta.env.VITE_TOMTOM_API_KEY;
+  const mapContainer = useRef();
+  const [map, setMap] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(10);
+  const mapRef = useRef(null);
+
+  const [activeTab, setActiveTab] = useState('trucks');
   const [trucks, setTrucks] = useState([])
   const [truckName, setTruckName] = useState('');
   const [cuisineType, setCuisineType] = useState('');
@@ -14,6 +25,54 @@ function App() {
   useEffect(() => {
     loadTrucks();
   }, []);
+
+  // TomTom Map display
+  useEffect(() => {
+    if (activeTab !== 'User') {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+      return;
+    }
+
+    if (!mapContainer.current || mapRef.current) return;
+
+    const markerCoords = [-122.4194, 37.7749]; // TRUCKK INPUT
+    const ourMap = mapSDK.map({
+      key: apiKey,
+      container: mapContainer.current,
+      center: markerCoords,
+      zoom: zoomLevel,
+    });
+    mapRef.current = ourMap;
+
+    const fitToMarkerAndUser = (userLngLat) => {
+      const bounds = new mapSDK.LngLatBounds();
+      bounds.extend(markerCoords);
+      bounds.extend(userLngLat);
+      ourMap.fitBounds(bounds, { padding: 80, maxZoom: 14, duration: 800 });
+    };
+
+    const geo = new mapSDK.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true },
+      trackUserLocation: true,
+      showAccuracyCircle: true,
+    });
+    ourMap.addControl(geo, 'top-left');
+    geo.trigger();
+    geo.on('geolocate', (pos) => {
+      const userCoords = [pos.coords.longitude, pos.coords.latitude];
+      fitToMarkerAndUser(userCoords); 
+    });
+
+    new mapSDK.Marker().setLngLat(markerCoords).addTo(ourMap);
+
+    return () => {
+      ourMap.remove();
+      mapRef.current = null;
+    };
+  }, [activeTab, apiKey, zoomLevel]);
 
   const loadTrucks = async () => {
     try {
@@ -86,10 +145,27 @@ function App() {
 
       <header>
         <h1>Food Truck Tracker</h1>
+        <nav className="tabs">
+          <button 
+            className={`tab-btn ${activeTab === 'trucks' ? 'active' : ''}`}
+            onClick={() => setActiveTab('trucks')}
+          >
+            Trucks
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'User' ? 'active' : ''}`}
+            onClick={() => setActiveTab('User')}
+          >
+            User
+          </button>
+        </nav>
       </header>
 
       <div className="main-content">
+        {activeTab === 'trucks' && (
+          <>
         <div className="left-content">
+          <h2>Your Trucks</h2>
           {trucks.map(truck => <div key={truck._id} className ="listing"> 
             
             <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -109,7 +185,7 @@ function App() {
           <form onSubmit={handleAddTruck} className="addTruckForm">
             <h2>Add a New Truck</h2>
             <p>
-              Truck Name:
+              Enter Truck Name:
             </p>
             <input 
             type="text" 
@@ -201,7 +277,21 @@ function App() {
               </button>
             </div>
           </form>
+          
         </div>
+        </>
+        )}
+
+        {activeTab === 'User' && (
+          <div className="user-page">
+            <h2>User</h2>
+            <p>User content goes here</p>
+            
+            <div ref={mapContainer} className="routeMapDemo" />
+            
+          </div>
+        )}
+
       </div>
 
 

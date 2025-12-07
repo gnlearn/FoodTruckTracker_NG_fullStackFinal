@@ -3,9 +3,7 @@
   overflow: auto;
 }
 
-.main-content {
-    display: flex;
-}
+
 
 .right-content {
     padding: 20px;
@@ -13,4 +11,28 @@
 
 .listing {
     border-bottom: solid;
+}
+
+.routeMapDemo {
+  width: 100%;
+  height: calc(100vh - 120px); /* adjust 120px to your header height */
+}
+
+/* App.css */
+.app,
+.main-content {
+  width: 100%;
+}
+
+.user-page {
+  flex: 1;                /* let it expand inside main-content */
+  display: flex;
+  flex-direction: column;
+}
+
+.routeMapDemo {
+  flex: 1;                /* fill vertical space in user-page */
+  width: 100%;
+  height: calc(100vh - 120px); /* keep your header offset */
+  min-height: 400px;      /* optional safety */
 }
