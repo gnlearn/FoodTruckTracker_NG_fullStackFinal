@@ -10,12 +10,12 @@
 }
 
 .listing {
-    border-bottom: solid;
+  border-bottom: solid;
 }
 
-.routeMapDemo {
-  width: 100%;
-  height: calc(100vh - 120px); /* adjust 120px to your header height */
+.listing:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
 }
 
 /* App.css */
@@ -25,14 +25,46 @@
 }
 
 .user-page {
-  flex: 1;                /* let it expand inside main-content */
+  flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  position: relative;
+}
+
+.user-sidebar {
+  width: 25%;
+  height: calc(100vh - 41.85px);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 5px;
+  overflow-y: auto;
+  flex-shrink: 0; /* prevent sidebar from shrinking */
+}
+
+.focusTruckPopUp {
+  width: 25%;
+  height: calc(100vh - 41.85px);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 5px;
+  overflow-y: auto;
+  flex-shrink: 0; /* prevent popup from shrinking */
 }
 
 .routeMapDemo {
-  flex: 1;                /* fill vertical space in user-page */
-  width: 100%;
-  height: calc(100vh - 120px); /* keep your header offset */
-  min-height: 400px;      /* optional safety */
+  flex: 1; /* take remaining space */
+  height: calc(100vh - 41.85px);
+  border-radius: 5px;
+  /* Remove position: fixed, right, top, width, z-index */
 }
+
+.user-page h1 {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 0;
+}
+

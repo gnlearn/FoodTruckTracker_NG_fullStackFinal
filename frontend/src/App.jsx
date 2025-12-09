@@ -1,18 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { getTrucks, createTruck, updateTruck, deleteTruck } from './api/trucks';
-
+import { getDistance } from 'geolib';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import mapSDK from '@tomtom-international/web-sdk-maps';
+import 'font-awesome/css/font-awesome.min.css'; 
 
 
 function App() {
   const apiKey = import.meta.env.VITE_TOMTOM_API_KEY;
+  
   const mapContainer = useRef();
   const [map, setMap] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(10);
   const mapRef = useRef(null);
-
+  const [userCoords, setUserCoords] = useState(null);
   const [activeTab, setActiveTab] = useState('trucks');
   const [trucks, setTrucks] = useState([])
   const [truckName, setTruckName] = useState('');
@@ -21,6 +23,8 @@ function App() {
   const [openTime, setOpenTime] = useState('');
   const [closeTime, setCloseTime] = useState('');
   const [loading, setLoading] = useState(true);
+  const [truckAddress, setTruckAddress] = useState('');
+  const [focusTruck, setFocusTruck] = useState('');
   
   useEffect(() => {
     loadTrucks();
@@ -38,18 +42,18 @@ function App() {
 
     if (!mapContainer.current || mapRef.current) return;
 
-    const markerCoords = [-122.4194, 37.7749]; // TRUCKK INPUT
+    
     const ourMap = mapSDK.map({
       key: apiKey,
       container: mapContainer.current,
-      center: markerCoords,
+      center: [-93.609114, 41.60054],
       zoom: zoomLevel,
     });
     mapRef.current = ourMap;
 
     const fitToMarkerAndUser = (userLngLat) => {
       const bounds = new mapSDK.LngLatBounds();
-      bounds.extend(markerCoords);
+      trucks.forEach(truck => {bounds.extend([truck.longitude, truck.latitude]);});
       bounds.extend(userLngLat);
       ourMap.fitBounds(bounds, { padding: 80, maxZoom: 14, duration: 800 });
     };
@@ -62,17 +66,32 @@ function App() {
     ourMap.addControl(geo, 'top-left');
     geo.trigger();
     geo.on('geolocate', (pos) => {
-      const userCoords = [pos.coords.longitude, pos.coords.latitude];
+      setUserCoords([pos.coords.longitude, pos.coords.latitude]);
       fitToMarkerAndUser(userCoords); 
     });
 
-    new mapSDK.Marker().setLngLat(markerCoords).addTo(ourMap);
+    trucks.forEach(truck => {
+      const emoji = document.createElement('div');
+      emoji.innerHTML = '🚐';
+      emoji.style.fontSize = '40px';
+      emoji.style.cursor = 'pointer';
+      new mapSDK.Marker({ element: emoji }).setLngLat([truck.longitude, truck.latitude]).addTo(ourMap);
+    });
 
     return () => {
       ourMap.remove();
       mapRef.current = null;
     };
   }, [activeTab, apiKey, zoomLevel]);
+
+  const zoomToTruck = (truck) => {
+    mapRef.current.flyTo({
+      center: [truck.longitude, truck.latitude],
+      zoom: 14
+    });
+
+    setFocusTruck(truck);
+  }
 
   const loadTrucks = async () => {
     try {
@@ -91,14 +110,19 @@ function App() {
     if (!truckName.trim() || !cuisineType.trim() || !description.trim()) return;
 
     try {
+      const res = await fetch('https://api.tomtom.com/search/2/geocode/' + encodeURIComponent(truckAddress.trim()) + '.json?key=' + apiKey);
+      const data = await res.json();
+            
+      
       const newTruck = await createTruck({
         truckName: truckName.trim(),
         cuisineType: cuisineType.trim(),
         description: description.trim(),
         openTime: openTime,
         closeTime: closeTime,
-        longitude: 0,
-        latitude: 0,
+        longitude: data.results[0].position.lon,
+        latitude: data.results[0].position.lat,
+        address: truckAddress.trim(),
         ownerID: 1234
       });
 
@@ -109,6 +133,7 @@ function App() {
       setDescription('');
       setOpenTime('');
       setCloseTime('');
+      setTruckAddress('');
 
     } catch (err) {
       console.error('Error adding truck:', err);
@@ -144,7 +169,6 @@ function App() {
       
 
       <header>
-        <h1>Food Truck Tracker</h1>
         <nav className="tabs">
           <button 
             className={`tab-btn ${activeTab === 'trucks' ? 'active' : ''}`}
@@ -164,6 +188,7 @@ function App() {
       <div className="main-content">
         {activeTab === 'trucks' && (
           <>
+          <h1>Food Truck Tracker</h1>
         <div className="left-content">
           <h2>Your Trucks</h2>
           {trucks.map(truck => <div key={truck._id} className ="listing"> 
@@ -175,9 +200,8 @@ function App() {
             <p>{ truck.description }</p>
             <p>{ truck.cuisineType }</p>
             <p>{ truck.openTime } - { truck.closeTime }</p>
+            <p>{ truck.address }</p>
           
-            
-      
           </div>)}
 
         </div>
@@ -271,6 +295,15 @@ function App() {
               <option value="11:00 PM">11:00 PM</option>
             </select>
 
+            <p>
+              Enter Truck Address:
+            </p>
+            <input 
+            type="text" 
+            className = "truckInput" 
+            value={truckAddress}
+            onChange={e => setTruckAddress(e.target.value)}/>
+
             <div>
               <button type="submit" className="add-button">
                   Add Task
@@ -284,9 +317,49 @@ function App() {
 
         {activeTab === 'User' && (
           <div className="user-page">
-            <h2>User</h2>
-            <p>User content goes here</p>
+            <div className="user-sidebar">
+            {trucks.map(truck => <div key={truck._id} className ="listing" onClick={() => zoomToTruck(truck)}>
+            <h3>{ truck.truckName } </h3>
+              
             
+            <p>{ truck.description }</p>
+            <p>{ truck.cuisineType }</p>
+            <p>{ truck.openTime } - { truck.closeTime }</p>
+            <p>{ truck.address }</p>
+            {userCoords &&
+              <p>{(getDistance({latitude: truck.latitude, longitude: truck.longitude}, userCoords) / 1609.344).toFixed(2) + " miles"}</p>
+            }
+            
+            
+            </div>
+            )}
+            </div>
+            <h1>Food Truck Tracker</h1>
+            {focusTruck && (
+              <div className="focusTruckPopUp">
+                <div className="container" style={{position: "relative"}}>
+                  <button onClick={() => setFocusTruck(null)} style={{position: "absolute",
+                    top: "8px",
+                    right: "16px",
+                    fontSize: "20px",
+                    }}>X</button>
+                  <img src="https://tse3.mm.bing.net/th/id/OIP._6E-STFojnnJePRtRlELcgHaFj?rs=1&pid=ImgDetMain&o=7&rm=3" alt="food truck" width="100%"/>
+                </div>
+                <h2>{focusTruck.truckName}</h2>
+                <p>4 ⭐⭐⭐⭐ (24) • $$ </p>
+                <p>{ focusTruck.cuisineType }</p>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <button>Overview</button>
+                  <button>Menu</button>
+                  <button>Reviews</button>
+                </div>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <button><i class="fa fa-car"></i></button>
+                  <button><i class='fa fa-bookmark'></i></button>
+                  <button><i class="fa fa-share"></i></button>
+                </div>
+              </div>
+              )}
             <div ref={mapContainer} className="routeMapDemo" />
             
           </div>
@@ -294,32 +367,7 @@ function App() {
 
       </div>
 
-
     </div>
-  // State management
-  
-
-  // Load trucks from database on mount
-  
-
-  /**
-   * Fetch all trucks from backend
-   */
-  
-
-  /**
-   * Add a new truck
-   */
-  
-
-  
-
-  /**
-   * Delete truck listing
-   */
-  
-
-  // Loading state
 
 );}
 
