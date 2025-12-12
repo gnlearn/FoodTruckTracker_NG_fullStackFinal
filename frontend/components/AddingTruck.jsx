@@ -120,7 +120,7 @@ function AddingTruck({
 
             <div>
                 <button type="submit" className="add-button">
-                    Add Task
+                    Add Truck
                 </button>
             </div>
             </form>
