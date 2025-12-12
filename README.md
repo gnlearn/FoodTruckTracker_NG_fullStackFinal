@@ -172,17 +172,21 @@ Deletes a food truck listing.
 
 ---
 
-## 🎥 Video Walkthrough UPPDDATTTEEE
+## 🎥 Video Walkthrough
 
-**Link to Loom/YouTube:**
-[https://your-video-link.com](https://your-video-link.com)
+**Link to YouTube Demo:**
+[https://www.youtube.com/watch?v=OhfFWxmxtlA](https://www.youtube.com/watch?v=OhfFWxmxtlA)
 
-Include quick timestamps if you want extra professionalism:
+Timestamps:
 
-* **0:00–0:30** Overview
-* **0:30–1:30** Core features demo
-* **1:30–2:30** Advanced feature
-* **2:30–3:00** Technical challenge solved
+* **0:00–0:19** Introduction
+* **0:19–1:06** Core features: Truck Owner UI
+* **1:06–1:27** Advanced feature 1
+* **1:27–2:39** More features
+* **2:39–2:47** Core features: Customer UI
+* **2:47–2:59** Advanced feature 2
+* **2:59–4:15** More features
+* **4:15–end** Technical Challenge & Outro
 
 ---
 
