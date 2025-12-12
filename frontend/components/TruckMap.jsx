@@ -28,6 +28,7 @@ function TruckMap({
     if (!mapContainerRef.current || mapRef.current) return;
 
     //create map
+    //Advanced Feature: External API 1
     const ourMap = mapSDK.map({
       key: apiKey,
       container: mapContainerRef.current,
