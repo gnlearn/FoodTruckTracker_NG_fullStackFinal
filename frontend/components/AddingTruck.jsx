@@ -15,6 +15,7 @@ function AddingTruck({
   setTruckAddress,
 }) {
     return (
+        //form for adding truck, displayed on right side
         <div className="right-content">
             <form onSubmit={handleAddTruck} className="addTruckForm">
             <div className="space">

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//database schema for individual truck
 const truckSchema = new mongoose.Schema({
   truckName: {
     type: String,

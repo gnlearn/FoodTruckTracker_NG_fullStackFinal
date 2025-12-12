@@ -1,9 +1,10 @@
 import { getDistance } from 'geolib';
-
+//component to list trucks either for user view or owner view
 function TruckList({ trucks, handleDeleteTruck, activeTab, userCoords, onTruckClick, setEditTruckForm }) {
     const isUserView = activeTab === 'User';
     const which_class = activeTab === 'User' ? 'listing' : 'listing-truck';
-
+    
+    //calculate distance from user to truck, coordinates to miles
     const formatDistance = (truck) => {
         if (!userCoords) return null;
         const miles =
@@ -16,7 +17,9 @@ function TruckList({ trucks, handleDeleteTruck, activeTab, userCoords, onTruckCl
 
     return trucks.map((truck) => {
         const distanceMiles = isUserView ? formatDistance(truck) : null;
+        //click handler for customer view trucks
         const handleClick = isUserView && onTruckClick ? () => onTruckClick(truck) : undefined;
+        //space and enter key triggers click
         const handleKeyDown = isUserView && onTruckClick
             ? (event) => {
                     if (event.key === 'Enter' || event.key === ' ') {
@@ -27,6 +30,7 @@ function TruckList({ trucks, handleDeleteTruck, activeTab, userCoords, onTruckCl
             : undefined;
 
         return (
+            //individual truck listing, clickable in user view, editable in owner view
             <div
                 key={truck._id}
                 className={which_class}

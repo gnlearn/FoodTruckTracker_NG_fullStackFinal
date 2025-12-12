@@ -14,6 +14,7 @@ function TruckMap({
   const mapRef = useRef(null);
   const suppressAutoFitRef = useRef(false);
 
+  //initialize map in user view
   useEffect(() => {
     if (activeTab !== 'User') {
       if (mapRef.current) {
@@ -23,8 +24,10 @@ function TruckMap({
       return;
     }
 
+    //only initialize map once
     if (!mapContainerRef.current || mapRef.current) return;
 
+    //create map
     const ourMap = mapSDK.map({
       key: apiKey,
       container: mapContainerRef.current,
@@ -33,6 +36,7 @@ function TruckMap({
     });
     mapRef.current = ourMap;
 
+    //force map to show all trucks and user location in same view
     const fitToMarkerAndUser = (userLngLat) => {
       if (!userLngLat) return;
       const bounds = new mapSDK.LngLatBounds();
@@ -43,6 +47,7 @@ function TruckMap({
       ourMap.fitBounds(bounds, { padding: 80, maxZoom: 14, duration: 800 });
     };
 
+    //find user location and update map
     const handleGeolocate = (pos) => {
       const coords = [pos.coords.longitude, pos.coords.latitude];
       setUserCoords(coords);
@@ -50,26 +55,30 @@ function TruckMap({
       fitToMarkerAndUser(coords);
     };
 
+    //request user location
     const requestLocation = () => {
       if (!navigator?.geolocation) return;
       navigator.geolocation.getCurrentPosition(handleGeolocate, () => {});
     };
 
+    //add geolocate control to map
     const geo = new mapSDK.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
       trackUserLocation: true,
       showAccuracyCircle: true,
     });
 
+    //listen for user location updates
     geo.on('geolocate', handleGeolocate);
     ourMap.addControl(geo, 'top-left');
-
+    
     if (ourMap.loaded()) {
       requestLocation();
     } else {
       ourMap.on('load', requestLocation);
     }
 
+    //add truck markers to map
     trucks.forEach(({ longitude, latitude }) => {
       const emoji = document.createElement('div');
       emoji.innerHTML = '🚐';
@@ -79,6 +88,7 @@ function TruckMap({
     });
 
     return () => {
+      //clean up
       geo.off('geolocate', handleGeolocate);
       ourMap.removeControl(geo);
       ourMap.remove();
@@ -87,6 +97,7 @@ function TruckMap({
     };
   }, [activeTab, apiKey, zoomLevel, trucks, setUserCoords]);
 
+  //clicking on truck listing zooms to truck on map
   const zoomToTruckOnMap = useCallback(
     (truck) => {
       if (!mapRef.current) return;
@@ -102,6 +113,7 @@ function TruckMap({
     [setFocusTruck],
   );
 
+  //make zoomToTruckOnMap available to be called from outside
   useEffect(() => {
     TruckMap.zoomToTruck = zoomToTruckOnMap;
     return () => {

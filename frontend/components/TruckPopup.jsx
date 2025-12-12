@@ -1,5 +1,6 @@
 function TruckPopup({ focusTruck, setFocusTruck }) {
     return (focusTruck && (
+        //popup showing focused truck details
         <div className="focusTruckPopUp">
         <div className="container" style={{position: "relative"}}>
             <button onClick={() => setFocusTruck(null)} className="closePopup">X</button>

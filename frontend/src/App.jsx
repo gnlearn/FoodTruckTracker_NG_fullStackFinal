@@ -31,6 +31,7 @@ function App() {
     loadTrucks();
   }, []);
   
+  //load trucks from backend
   const loadTrucks = async () => {
         try {
             setLoading(true);
@@ -44,16 +45,18 @@ function App() {
         }
 
   
-  
+  //handle clicking on truck listing in user view
   const handleTruckClick = (truck) => {
     TruckMap.zoomToTruck?.(truck);
   };
 
+  //handle adding new truck
   const handleAddTruck = async (e) => {
     e.preventDefault();
     if (!truckName.trim() || !cuisineType.trim() || !description.trim()) return;
 
     try {
+      //Advanced Feature: External API 2
       const res = await fetch('https://api.tomtom.com/search/2/geocode/' + encodeURIComponent(truckAddress.trim()) + '.json?key=' + apiKey);
       const data = await res.json();
             
@@ -93,6 +96,7 @@ function App() {
     );
   }
 
+  //handle deleting truck
   const handleDeleteTruck = async (truckID) => {
     try {
       
@@ -107,6 +111,7 @@ function App() {
     }
   };
   
+  //handle editing truck
   const handleEditTruck = async (truckId) => {
     truckId.preventDefault();
     truckId = editTruckForm._id;
@@ -114,6 +119,7 @@ function App() {
     try {
       
       const truck = trucks.find(t => t._id === truckId);
+      //Advanced Feature: External API 2
       const res = await fetch('https://api.tomtom.com/search/2/geocode/' + encodeURIComponent(truckAddress.trim()) + '.json?key=' + apiKey);
       const data = await res.json();
       
@@ -147,6 +153,7 @@ function App() {
     }
   }
 
+  //main app layout with tabs for owner and user views
   return (
     <div className="app">
       
@@ -169,6 +176,8 @@ function App() {
       </header>
 
       <div className="main-content">
+        
+        {/*Owner view with truck management*/}
         {activeTab === 'trucks' && (
           <>
           <h1>Food Truck Tracker</h1>
@@ -222,6 +231,7 @@ function App() {
         </>
         )}
 
+        {/*User view with map and truck listings*/}
         {activeTab === 'User' && (
 
 

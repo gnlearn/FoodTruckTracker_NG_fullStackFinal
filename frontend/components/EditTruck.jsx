@@ -28,7 +28,8 @@ function EditTruck({
     setTruckAddress(editTruckForm.address);
     
     }, [editTruckForm, setTruckName, setCuisineType, setDescription, setOpenTime, setCloseTime, setTruckAddress]);
-
+    
+    //edit truck form populated with current truck info, displayed on right side
     return (
         <div className="right-content">
             <form onSubmit={handleEditTruck} className="addTruckForm">
