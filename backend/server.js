@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://foodtrucktrackercs195.netlify.app/'
+    'https://foodtrucktrackercs195.netlify.app'
   ],
   credentials: true
 }));
