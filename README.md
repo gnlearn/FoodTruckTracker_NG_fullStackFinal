@@ -123,9 +123,7 @@ npm start
 
 ## 🛠 API Documentation
 
-Document the **main 3–5 routes**:
-
-### **GET /trucks **
+### GET /trucks 
 
 Retrieves all food truck listings.
 
@@ -136,14 +134,14 @@ Body example:
 
 ```json
 {
-  "truckID": 8794287420428791,
   "truckName": "Joe's Hotdogs",
   "cuisineType": "american, diner, hotdogs",
-  "description": "Bob's handmade hotdogs with unlimited toppings. Buy one get one free discount through black friday.", 
-  "longitude": 234.2312323,
-  "latitude": -78.23,
+  "description": "Joe's handmade hotdogs with unlimited toppings. Buy one get one free discount through black friday.", 
+  "longitude": 234.232323,
+  "latitude": -78.123123,
   "openTime": "1:00 PM",
   "closeTime": "4:00 AM",
+  "address": "2507 University Avenue, Des Moines, IA, 50311",
   "ownerID": 34567
 }
 
@@ -160,8 +158,6 @@ Deletes a food truck listing.
 ---
 
 ## 🚀 Deployment Notes
-
-Document where/how you deployed:
 
 ### **Frontend**
 
