@@ -43,7 +43,7 @@ function App() {
         }
         }
 
-  // TomTom Map display
+  
   
   const handleTruckClick = (truck) => {
     TruckMap.zoomToTruck?.(truck);

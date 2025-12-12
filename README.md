@@ -37,21 +37,22 @@ This app uses tomtom's Map and Geocoding APIs. The map is loaded through the tom
 ---
 
 ## 📸 Screenshots
+**Customer Page:**
+![Customer Page](/screenshots/Final_User.png)
 
-> Include 2–4 screenshots of your app.
-> Use relative paths (e.g., `/screenshots/home.png`) or full URLs.
+**Truck Owner Page:**
+![Truck Owner Page](/screenshots/Final_Trucks.png)
 
 ---
 
 ## 🏗️ Project Architecture
 
-Describe how the pieces fit together.
+This project uses a Vite powered React frontend and an Express/Mongoose backend to keep the user interface and stored data separate. 
 
 ```
 /frontend
   /src
     /components
-    /pages
     App.jsx
     main.jsx
 
@@ -60,10 +61,7 @@ Describe how the pieces fit together.
   /routes
   server.js
 ```
-
-Include a sentence explaining the flow:
-
-> The React frontend communicates with the Express backend through API routes. The backend interacts with MongoDB using Mongoose models, and environment variables are used to store secrets.
+> Through REST endpoints, the React client shares data with the Express service, which adds records in MongoDB via Mongoose. Simultaneously, values are updated on the user interface with environment variables.
 
 ---
 
@@ -80,21 +78,17 @@ cd your-project
 
 ### **2. Environment Variables**
 
-Include a `.env.example` file in both repos.
-
 **Backend `.env.example`:**
 
 ```
 MONGO_URI=your_mongodb_url
 PORT=4000
-JWT_SECRET=your_secret_if_using_auth
-API_KEY=if_using_external_apis
 ```
 
 **Frontend `.env.example`:**
 
 ```
-VITE_API_URL=https://your-backend-url.com
+VITE_TOMTOM_API_KEY=your_tomtom_api_key
 ```
 
 ---
@@ -114,7 +108,7 @@ npm run dev
 ```bash
 cd backend
 npm install
-npm run dev
+npm start
 ```
 
 ---
@@ -131,31 +125,37 @@ npm run dev
 
 Document the **main 3–5 routes**:
 
-### **GET /api/resource**
+### **GET /trucks **
 
-Returns all resources.
+Retrieves all food truck listings.
 
-### **POST /api/resource**
+### **POST /trucks**
 
-Creates a new resource.
+Creates a new food truck listing.
 Body example:
 
 ```json
 {
-  "name": "Example",
-  "description": "Text here"
+  "truckID": 8794287420428791,
+  "truckName": "Joe's Hotdogs",
+  "cuisineType": "american, diner, hotdogs",
+  "description": "Bob's handmade hotdogs with unlimited toppings. Buy one get one free discount through black friday.", 
+  "longitude": 234.2312323,
+  "latitude": -78.23,
+  "openTime": "1:00 PM",
+  "closeTime": "4:00 AM",
+  "ownerID": 34567
 }
+
 ```
+>ownerID included for future account authentication purposes
+### **PUT /trucks/:id**
 
-### **PATCH /api/resource/:id**
+Updates a food truck listing.
 
-Updates a resource.
+### **DELETE /trucks/:id**
 
-### **DELETE /api/resource/:id**
-
-Deletes a resource.
-
-> Add additional routes if needed (auth, file uploads, WebSockets, etc.).
+Deletes a food truck listing.
 
 ---
 
@@ -165,18 +165,18 @@ Document where/how you deployed:
 
 ### **Frontend**
 
-* Vercel / Netlify
-* Explain build command if different (`npm run build`)
+* Netlify
+* Environment variables (VITE_API_BASE_URL, VITE_TOMTOM_API_KEY)
 
 ### **Backend**
 
-* Render / Railway
-* Note environment variable setup
+* Render
+* Uploaded Backend .env file for environment variables (MONGODB_URI, PORT)
 
 
 ---
 
-## 🎥 Video Walkthrough
+## 🎥 Video Walkthrough UPPDDATTTEEE
 
 **Link to Loom/YouTube:**
 [https://your-video-link.com](https://your-video-link.com)
@@ -192,35 +192,28 @@ Include quick timestamps if you want extra professionalism:
 
 # 🧠 Reflection
 
-*(This section is required for grading.)*
-
 ### **1. What was the hardest part of this project?**
 
-Write 3–5 sentences.
+The hardest parts of this project was displaying the Map with the TomTom API and deploying the final product. Initially, I tried to use the Google Maps API, but the website gave me authentication errors during the account sign up, so I had to search for a different API. I found TomTom Maps which is a smaller company, so their documentation was not thorough and challenging to navigate. However, they had a great AI support chat that I used to search for the functions/documentation pages I needed. For deployment, the Render and Netlify issues were resolved by using the console and network tabs in Microsoft Edge DevTools. 
 
 ### **2. What are you most proud of?**
 
-Could be a feature, a UI improvement, debugging work, or personal growth.
+I am most proud of the understanding I have gained on how a full stack Node.js app communicates with each of its layers. This knowledge makes me more confident that I can build my own app ideas or join a startup.
 
 ### **3. What would you do differently next time?**
 
-Think in terms of planning, scoping, or tech choices.
+Next time, I would use a more established Map API, so I could have better documentation and troubleshooting. There is an error in the terminal when the map is loaded that doesn't have any effect on the display, but I was not able to figure it out with the documentation after spending a really long time trying to fix it. Also, I didn't want to keep increasing the scope, but if I had a little more time, I would add photo storage for food truck listings and a reviews database. Currently, when clicking on a food truck listing on the customer side, the pop up has a filler picture and buttons that don't function because adding functions would increase the scope a lot more. 
 
 ### **4. How did you incorporate feedback from the 12/5 check-in gallery?**
 
-Be explicit (this is graded):
-
-> “Based on feedback, I reduced scope by removing X and focused on stabilizing Y.”
-> “I reorganized my components for readability after feedback about structure.”
+Most of the feedback I received from students after showing the app's wireframe was to try using the Google Maps API to create my desired layout. However, this did not end up working. 
+Other feedback I received was to increase readibility by adding button interactivity and icons rather than a static page and text described buttons. With this advice, I added the plus, pencil, crosshairs (location), car, bookmark, and arrow (share) icons on buttons along with a slight move up hover animation for the interactive elements.  
 
 ---
 
 # Acknowledgments / AI Usage Disclosure
 
-> Include a brief note on tools used (per academic integrity guidelines):
-
 Examples:
 
-* “Used ChatGPT to help troubleshoot a CORS issue.”
-* “Used Claude for help writing documentation.”
-* “Used VSCode Copilot for autocomplete suggestions.”
+* Used the tomtom support chatbot which is built on kapa.ai to help read/navigate the documentation.
+* Used VSCode Copilot to give design suggestions in App.css
