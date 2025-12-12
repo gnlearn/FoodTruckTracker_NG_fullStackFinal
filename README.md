@@ -175,7 +175,7 @@ Deletes a food truck listing.
 ## 🎥 Video Walkthrough
 
 **Link to YouTube Demo:**
-[https://www.youtube.com/watch?v=OhfFWxmxtlA](https://www.youtube.com/watch?v=OhfFWxmxtlA)
+[https://www.youtube.com/watch?v=ZUg_AMSYbiY](https://www.youtube.com/watch?v=ZUg_AMSYbiY)
 
 Timestamps:
 
@@ -186,7 +186,9 @@ Timestamps:
 * **2:39–2:47** Core features: Customer UI
 * **2:47–2:59** Advanced feature 2
 * **2:59–4:15** More features
-* **4:15–end** Technical Challenge & Outro
+* **4:15–5:18** Technical Challenge
+* **5:18–6:03** Code Walkthrough of Complex Feature
+* **6:03–end** Overview of Tech Stack, Why I Chose This Tech Stack, and Outro
 
 ---
 
