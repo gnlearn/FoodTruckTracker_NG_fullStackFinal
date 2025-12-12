@@ -1,6 +1,9 @@
-function AddingTruck({
-  handleAddTruck,
-  setMakeTruckForm,
+import { useEffect } from "react";
+
+function EditTruck({
+  handleEditTruck,
+  editTruckForm,
+  setEditTruckForm,
   truckName,
   setTruckName,
   cuisineType,
@@ -13,16 +16,28 @@ function AddingTruck({
   setCloseTime,
   truckAddress,
   setTruckAddress,
+  
+    
 }) {
+    useEffect(() => {
+    setTruckName(editTruckForm.truckName);
+    setCuisineType(editTruckForm.cuisineType);
+    setDescription(editTruckForm.description);
+    setOpenTime(editTruckForm.openTime);
+    setCloseTime(editTruckForm.closeTime);
+    setTruckAddress(editTruckForm.address);
+    
+    }, [editTruckForm, setTruckName, setCuisineType, setDescription, setOpenTime, setCloseTime, setTruckAddress]);
+
     return (
         <div className="right-content">
-            <form onSubmit={handleAddTruck} className="addTruckForm">
+            <form onSubmit={handleEditTruck} className="addTruckForm">
             <div className="space">
-                <h2>Add a New Truck</h2>
-                <button onClick={() => setMakeTruckForm(false)}>X</button>
+                <h2>Edit Truck: {truckName}</h2>
+                <button onClick={() => setEditTruckForm(false)}>X</button>
             </div>
             <p>
-                Enter Truck Name:
+                Truck Name:
             </p>
             <input 
             type="text" 
@@ -109,7 +124,7 @@ function AddingTruck({
             </select>
 
             <p>
-                Enter Truck Address:
+                Truck Address:
             </p>
             <input 
             type="text" 
@@ -120,11 +135,11 @@ function AddingTruck({
 
             <div>
                 <button type="submit" className="add-button">
-                    Add Task
+                    Apply Changes
                 </button>
             </div>
             </form>
         </div>
     )}
 
-export default AddingTruck;
+export default EditTruck;

@@ -1,6 +1,6 @@
 import { getDistance } from 'geolib';
 
-function TruckList({ trucks, handleDeleteTruck, activeTab, userCoords, onTruckClick }) {
+function TruckList({ trucks, handleDeleteTruck, activeTab, userCoords, onTruckClick, setEditTruckForm }) {
     const isUserView = activeTab === 'User';
 
     const formatDistance = (truck) => {
@@ -38,7 +38,7 @@ function TruckList({ trucks, handleDeleteTruck, activeTab, userCoords, onTruckCl
                     <div className="inline">
                         <h3>{truck.truckName}</h3>
                         {!isUserView && (
-                            <button type="button">
+                            <button type="button" onClick={() => { setEditTruckForm(truck) }}>
                                 <i className="fa fa-pencil" />
                             </button>
                         )}

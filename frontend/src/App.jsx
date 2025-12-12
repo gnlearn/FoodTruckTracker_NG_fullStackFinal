@@ -7,6 +7,7 @@ import AddingTruck from '../components/AddingTruck.jsx';
 import TruckList from '../components/TruckList.jsx';
 import TruckMap from '../components/TruckMap.jsx';
 import TruckPopup from '../components/TruckPopup.jsx';
+import EditTruck from '../components/EditTruck.jsx';
 
 function App() {
   const apiKey = import.meta.env.VITE_TOMTOM_API_KEY;
@@ -24,6 +25,7 @@ function App() {
   const [truckAddress, setTruckAddress] = useState('');
   const [focusTruck, setFocusTruck] = useState('');
   const [makeTruckForm, setMakeTruckForm] = useState('');
+  const [editTruckForm, setEditTruckForm] = useState('');
   
   useEffect(() => {
     loadTrucks();
@@ -105,6 +107,45 @@ function App() {
     }
   };
   
+  const handleEditTruck = async (truckId) => {
+    truckId.preventDefault();
+    truckId = editTruckForm._id;
+    console.log('Editing truck:', truckId);
+    try {
+      
+      const truck = trucks.find(t => t._id === truckId);
+      const res = await fetch('https://api.tomtom.com/search/2/geocode/' + encodeURIComponent(truckAddress.trim()) + '.json?key=' + apiKey);
+      const data = await res.json();
+      
+      
+      const updatedTruck = await updateTruck(truckId, { 
+        truckName: truckName.trim(),
+        cuisineType: cuisineType.trim(),
+        description: description.trim(),
+        openTime: openTime,
+        closeTime: closeTime,
+        longitude: data.results[0].position.lon,
+        latitude: data.results[0].position.lat,
+        address: truckAddress.trim(),
+        ownerID: 1234 
+      });
+      
+      setTrucks(trucks.map(t => 
+        t._id === truckId ? updatedTruck : t
+      ));
+
+      setTruckName('');
+      setCuisineType('');
+      setDescription('');
+      setOpenTime('');
+      setCloseTime('');
+      setTruckAddress('');
+      setEditTruckForm(false);
+    } catch (err) {
+      console.error('Error toggling truck:', err);
+      
+    }
+  }
 
   return (
     <div className="app">
@@ -137,7 +178,7 @@ function App() {
             <h2>Your Trucks</h2>
             <button onClick={() => setMakeTruckForm(true)}><i className="fa fa-plus"></i></button>
           </div>
-            <TruckList trucks={trucks} handleDeleteTruck={handleDeleteTruck}/>
+            <TruckList trucks={trucks} handleDeleteTruck={handleDeleteTruck} setEditTruckForm={setEditTruckForm}/>
           
         </div>
         {makeTruckForm && (<AddingTruck
@@ -156,6 +197,26 @@ function App() {
           truckAddress={truckAddress}
           setTruckAddress={setTruckAddress}
         />)}
+
+        {editTruckForm && (<EditTruck
+          handleEditTruck={handleEditTruck}
+          editTruckForm={editTruckForm}
+          setEditTruckForm={setEditTruckForm}
+          truckName={truckName}
+          setTruckName={setTruckName}
+          cuisineType={cuisineType}
+          setCuisineType={setCuisineType}
+          description={description}
+          setDescription={setDescription}
+          openTime={openTime}
+          setOpenTime={setOpenTime}
+          closeTime={closeTime}
+          setCloseTime={setCloseTime}
+          truckAddress={truckAddress}
+          setTruckAddress={setTruckAddress}
+          
+        />)}
+
         </div>
         
         </>
