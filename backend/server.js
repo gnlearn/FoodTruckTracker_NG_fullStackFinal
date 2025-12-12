@@ -1,3 +1,5 @@
+import cors from 'cors';
+
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -8,7 +10,13 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://foodtrucktrackercs195.netlify.app/'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // MongoDB Connection
