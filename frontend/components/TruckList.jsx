@@ -2,6 +2,7 @@ import { getDistance } from 'geolib';
 
 function TruckList({ trucks, handleDeleteTruck, activeTab, userCoords, onTruckClick, setEditTruckForm }) {
     const isUserView = activeTab === 'User';
+    const which_class = activeTab === 'User' ? 'listing' : 'listing-truck';
 
     const formatDistance = (truck) => {
         if (!userCoords) return null;
@@ -28,7 +29,7 @@ function TruckList({ trucks, handleDeleteTruck, activeTab, userCoords, onTruckCl
         return (
             <div
                 key={truck._id}
-                className="listing"
+                className={which_class}
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
                 role={isUserView ? 'button' : undefined}

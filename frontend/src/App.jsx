@@ -176,7 +176,7 @@ function App() {
         <div className="left-content">
           <div className="inline">
             <h2>Your Trucks</h2>
-            <button onClick={() => setMakeTruckForm(true)}><i className="fa fa-plus"></i></button>
+            <button className="add" onClick={() => setMakeTruckForm(true)}><i className="fa fa-plus"></i></button>
           </div>
             <TruckList trucks={trucks} handleDeleteTruck={handleDeleteTruck} setEditTruckForm={setEditTruckForm}/>
           
@@ -231,7 +231,7 @@ function App() {
             <TruckList trucks={trucks} handleDeleteTruck={handleDeleteTruck} activeTab={activeTab} userCoords={userCoords} onTruckClick={handleTruckClick}/>
             
             </div>
-            <h1>Food Truck Tracker</h1>
+            <h5>Food Truck Tracker</h5>
             <TruckPopup 
             focusTruck={focusTruck} 
             setFocusTruck={setFocusTruck}/>
